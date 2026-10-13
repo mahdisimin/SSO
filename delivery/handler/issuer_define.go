@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"SSO/config"
 	"SSO/services"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 )
 
 func GetIssuerHander(c *echo.Context) error {
-	isser := services.NewIssuer()
-	return c.JSON(http.StatusOK, isser)
+	cfg := config.Load()
+	issuer := services.NewIssuer(cfg.Issuer)
+	return c.JSON(http.StatusOK, issuer)
 }

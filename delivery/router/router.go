@@ -1,6 +1,7 @@
 package router
 
 import (
+	"SSO/config"
 	"SSO/delivery/handler"
 	"log"
 
@@ -8,11 +9,13 @@ import (
 )
 
 func RouteResolver() {
+	cfg := config.Load()
+
 	e := echo.New()
 
 	e.GET(".well-known/openid-configuration", handler.GetIssuerHander)
 
 	log.Printf("server listening on port 8080 ... \n")
 
-	log.Fatal(e.Start(":8080"))
+	log.Fatal(e.Start(":" + cfg.Port))
 }
