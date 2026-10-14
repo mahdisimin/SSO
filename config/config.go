@@ -18,8 +18,8 @@ func getEnv(key, fallback string) string {
 }
 
 func Load() Config {
-	SSO_ISSUER := getEnv("Issuer", "http://localhost")
-	SSO_PORT := getEnv("Port", "8080")
+	SSO_ISSUER := getEnv("SSO_ISSUER", "http://localhost:8080")
+	SSO_PORT := getEnv("SSO_PORT", "8080")
 	SSO_ISSUER = strings.TrimSuffix(SSO_ISSUER, "/")
 	config := Config{
 		IssuerAddress: SSO_ISSUER,
