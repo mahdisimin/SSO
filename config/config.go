@@ -6,8 +6,8 @@ import (
 )
 
 type Config struct {
-	Issuer string
-	Port   string
+	IssuerAddress string
+	IssuerPort    string
 }
 
 func getEnv(key, fallback string) string {
@@ -18,12 +18,12 @@ func getEnv(key, fallback string) string {
 }
 
 func Load() Config {
-	issuer := getEnv("Issuer", "http://localhost:8080")
-	port := getEnv("Port", "8080")
-	strings.TrimSuffix(issuer, "/")
+	SSO_ISSUER := getEnv("Issuer", "http://localhost")
+	SSO_PORT := getEnv("Port", "8080")
+	SSO_ISSUER = strings.TrimSuffix(SSO_ISSUER, "/")
 	config := Config{
-		Issuer: issuer,
-		Port:   port,
+		IssuerAddress: SSO_ISSUER,
+		IssuerPort:    SSO_PORT,
 	}
 	return config
 }

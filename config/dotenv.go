@@ -19,14 +19,21 @@ func LoadDotEnv(path string) error {
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {
 		line := strings.TrimSpace(sc.Text())
-		if strings.HasPrefix(line, "#") {
+		if strings.HasPrefix(line, "#") || line == "" {
 			continue
 		}
-		key, val, _ := strings.Cut(line, "=")
+		key, val, found := strings.Cut(line, "=")
+		if !found {
+			continue
+		}
 		val = strings.TrimSpace(val)
 		key = strings.TrimSpace(key)
-		os.Setenv(key, val)
-		// TODO : Check if env var has been set before (for example at terminal) , do NOT set it here
+		if _, varFound := os.LookupEnv(key); !varFound {
+			err := os.Setenv(key, val)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	return sc.Err()
 }
