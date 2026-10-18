@@ -3,7 +3,9 @@ package keys
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha3"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/pem"
 	"errors"
 	"os"
@@ -58,4 +60,11 @@ func generateKey(path string) (*rsa.PrivateKey, error) {
 		return nil, errors.New("Error on Write New key : " + writeFileErr.Error())
 	}
 	return rsaKey, nil
+}
+
+func GenerateKID(key rsa.PublicKey) (string, error) {
+	x509Encoded := x509.MarshalPKCS1PublicKey(&key)
+	x509Encoded32Byte := sha3.Sum256(x509Encoded)
+	base64Encoded := base64.RawURLEncoding.EncodeToString(x509Encoded32Byte[:])
+	return base64Encoded, nil
 }

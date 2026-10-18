@@ -20,6 +20,12 @@ func main() {
 		log.Fatal("error on load / generate rsa key : ", rsaLoadErr)
 	}
 	fmt.Println(rsaKey.N.BitLen())
+	Kid, errKeyID := keys.GenerateKID(rsaKey.PublicKey)
+	fmt.Println(Kid)
+	if errKeyID != nil {
+		log.Fatal("error on generating kid : ", errKeyID)
+	}
+
 	issuer := services.NewIssuer(cfg.IssuerAddress)
 
 	router.RouteResolver(cfg.IssuerPort, issuer)
