@@ -13,10 +13,10 @@ import (
 
 func LoadOrGenerateKey(path string) (*rsa.PrivateKey, error) {
 	if fileData, err := os.ReadFile(path); errors.Is(err, os.ErrNotExist) {
-		if rsaKey, err := rsa.GenerateKey(rand.Reader, 2048); err != nil {
-			return nil, errors.New(fmt.Sprintf("Error generating RSA key: %s", err))
+		if generateKey, err := generateKey(path); err != nil {
+			return nil, err
 		} else {
-			return rsaKey, nil
+			return generateKey, nil
 		}
 
 	} else if err != nil {
