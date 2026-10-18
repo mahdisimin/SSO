@@ -11,9 +11,7 @@ import (
 )
 
 func LoadOrGenerateKey(path string) (*rsa.PrivateKey, error) {
-	var file *os.File
-	fileData := make([]byte, 2048)
-	if fileTmp, err := os.Open(path); errors.Is(err, os.ErrNotExist) {
+	if fileData, err := os.ReadFile(path); errors.Is(err, os.ErrNotExist) {
 		rsaKey, pvKeyErr := rsa.GenerateKey(rand.Reader, 2048)
 		if pvKeyErr != nil {
 			return nil, errors.New("Error on Generate New key : " + pvKeyErr.Error())
@@ -36,12 +34,6 @@ func LoadOrGenerateKey(path string) (*rsa.PrivateKey, error) {
 	} else if err != nil {
 		return nil, errors.New("Error on Open New key : " + err.Error())
 	} else {
-		file = fileTmp
-
-		_, readErr := file.Read(fileData)
-		if readErr != nil {
-			return nil, errors.New("Error on Read File key : " + readErr.Error())
-		}
 		block, _ := pem.Decode(fileData)
 		if block == nil {
 			return nil, errors.New("error on pem decode")
