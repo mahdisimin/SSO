@@ -19,7 +19,7 @@ func main() {
 	if rsaLoadErr != nil {
 		log.Fatal("error on load / generate rsa key : ", rsaLoadErr)
 	}
-	fmt.Println(rsaKey)
+	fmt.Println(rsaKey.N.BitLen())
 	issuer := services.NewIssuer(cfg.IssuerAddress)
 
 	router.RouteResolver(cfg.IssuerPort, issuer)
