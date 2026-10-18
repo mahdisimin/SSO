@@ -54,9 +54,9 @@ func generateKey(path string) (*rsa.PrivateKey, error) {
 	if pvKeyErr != nil {
 		return nil, errors.New("Error on Generate New key : " + pvKeyErr.Error())
 	}
-	x509Encoded, MarshalErr := x509.MarshalPKCS8PrivateKey(rsaKey)
-	if MarshalErr != nil {
-		return nil, errors.New("Error on marshaling the generated key : " + MarshalErr.Error())
+	x509Encoded, marshalErr := x509.MarshalPKCS8PrivateKey(rsaKey)
+	if marshalErr != nil {
+		return nil, errors.New("Error on marshaling the generated key : " + marshalErr.Error())
 	}
 	data := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: x509Encoded})
 	mkDirErr := os.MkdirAll(filepath.Dir(path), 0700)
