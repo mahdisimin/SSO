@@ -62,7 +62,7 @@ func generateKey(path string) (*rsa.PrivateKey, error) {
 	return rsaKey, nil
 }
 
-func GenerateKID(key rsa.PublicKey) (string, error) {
+func GenerateKID(key *rsa.PublicKey) (string, error) {
 	x509Encoded, Marshalerr := x509.MarshalPKIXPublicKey(key)
 	if Marshalerr != nil {
 		return "", errors.New("Error on Marshal the public key : " + Marshalerr.Error())

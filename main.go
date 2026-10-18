@@ -20,7 +20,7 @@ func main() {
 		log.Fatal("error on load / generate rsa key : ", rsaLoadErr)
 	}
 	fmt.Println(rsaKey.N.BitLen())
-	Kid, errKeyID := keys.GenerateKID(rsaKey.PublicKey)
+	Kid, errKeyID := keys.GenerateKID(&rsaKey.PublicKey)
 	if errKeyID != nil {
 		log.Fatal("error on generating kid : ", errKeyID)
 	}
