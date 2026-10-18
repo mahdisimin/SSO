@@ -6,31 +6,21 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 )
 
 func LoadOrGenerateKey(path string) (*rsa.PrivateKey, error) {
 	if fileData, err := os.ReadFile(path); errors.Is(err, os.ErrNotExist) {
-		if generateKey, err := generateKey(path); err != nil {
-			return nil, err
-		} else {
-			return generateKey, nil
-		}
-
+		return generateKey(path)
 	} else if err != nil {
 		return nil, errors.New("Error on Open New key : " + err.Error())
 	} else {
-		if rsaKey, err := LoadKey(fileData); err != nil {
-			return nil, errors.New(fmt.Sprintf("Error loading RSA key: %s", err))
-		} else {
-			return rsaKey, nil
-		}
+		return loadKey(fileData)
 	}
 }
 
-func LoadKey(fileData []byte) (*rsa.PrivateKey, error) {
+func loadKey(fileData []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(fileData)
 	if block == nil {
 		return nil, errors.New("error on pem decode")
