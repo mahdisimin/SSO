@@ -35,7 +35,9 @@ func (s *Signer) Sign(claims map[string]any) ([]byte, error) {
 
 	signingInput := base64.RawURLEncoding.EncodeToString(headerBytes) + "." + base64.RawURLEncoding.EncodeToString(claimBytes)
 	hash := sha256.Sum256([]byte(signingInput))
-	sig, _ := rsa.SignPKCS1v15(rand.Reader, s.privateKey, crypto.SHA256, hash[:])
-
+	sig, signErr := rsa.SignPKCS1v15(rand.Reader, s.privateKey, crypto.SHA256, hash[:])
+	if signErr != nil {
+		return nil, signErr
+	}
 	return []byte(signingInput + "." + base64.RawURLEncoding.EncodeToString(sig)), nil
 }
