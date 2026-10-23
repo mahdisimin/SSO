@@ -10,13 +10,13 @@ import (
 )
 
 type Signer struct {
-	sercretKey *rsa.PrivateKey
+	privateKey *rsa.PrivateKey
 	kid        string
 }
 
 func NewSigner(key *rsa.PrivateKey, kid string) *Signer {
 	return &Signer{
-		sercretKey: key,
+		privateKey: key,
 		kid:        kid,
 	}
 }
@@ -35,7 +35,7 @@ func (s *Signer) Sign(claims map[string]any) ([]byte, error) {
 
 	signingInput := base64.RawURLEncoding.EncodeToString(headerBytes) + "." + base64.RawURLEncoding.EncodeToString(claimBytes)
 	hash := sha256.Sum256([]byte(signingInput))
-	sig, _ := rsa.SignPKCS1v15(rand.Reader, s.sercretKey, crypto.SHA256, hash[:])
+	sig, _ := rsa.SignPKCS1v15(rand.Reader, s.privateKey, crypto.SHA256, hash[:])
 
 	return []byte(signingInput + "." + base64.RawURLEncoding.EncodeToString(sig)), nil
 }
