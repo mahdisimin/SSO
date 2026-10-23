@@ -9,19 +9,19 @@ import (
 	"encoding/json"
 )
 
-type Sign struct {
+type Signer struct {
 	sercretKey *rsa.PrivateKey
 	kid        string
 }
 
-func NewSigner(key *rsa.PrivateKey, kid string) *Sign {
-	return &Sign{
+func NewSigner(key *rsa.PrivateKey, kid string) *Signer {
+	return &Signer{
 		sercretKey: key,
 		kid:        kid,
 	}
 }
 
-func (s *Sign) Sign(claims map[string]any) ([]byte, error) {
+func (s *Signer) Sign(claims map[string]any) ([]byte, error) {
 	header := map[string]any{"alg": "RS256", "typ": "JWT", "kid": s.kid}
 
 	claimBytes, claimMarshalErr := json.Marshal(claims)
