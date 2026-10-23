@@ -26,11 +26,11 @@ func (s *Signer) Sign(claims map[string]any) (string, error) {
 
 	claimBytes, claimMarshalErr := json.Marshal(claims)
 	if claimMarshalErr != nil {
-		return nil, claimMarshalErr
+		return "", claimMarshalErr
 	}
 	headerBytes, headerMarshalErr := json.Marshal(header)
 	if headerMarshalErr != nil {
-		return nil, headerMarshalErr
+		return "", headerMarshalErr
 	}
 
 	signingInput := base64.RawURLEncoding.EncodeToString(headerBytes) + "." + base64.RawURLEncoding.EncodeToString(claimBytes)
