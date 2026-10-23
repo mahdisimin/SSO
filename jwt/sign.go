@@ -24,8 +24,14 @@ func NewSigner(key *rsa.PrivateKey, kid string) *Sign {
 func (s *Sign) Sign(claims map[string]any) ([]byte, error) {
 	header := map[string]any{"alg": "RS256", "typ": "JWT", "kid": s.kid}
 
-	claimBytes, _ := json.Marshal(claims)
-	headerBytes, _ := json.Marshal(header)
+	claimBytes, claimMarshalErr := json.Marshal(claims)
+	if claimMarshalErr != nil {
+		return nil, claimMarshalErr
+	}
+	headerBytes, HeaderMarshalErr := json.Marshal(header)
+	if HeaderMarshalErr != nil {
+		return nil, HeaderMarshalErr
+	}
 
 	signingInput := base64.RawURLEncoding.EncodeToString(headerBytes) + "." + base64.RawURLEncoding.EncodeToString(claimBytes)
 	hash := sha256.Sum256([]byte(signingInput))
