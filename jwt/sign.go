@@ -21,7 +21,7 @@ func NewSigner(key *rsa.PrivateKey, kid string) *Signer {
 	}
 }
 
-func (s *Signer) Sign(claims map[string]any) ([]byte, error) {
+func (s *Signer) Sign(claims map[string]any) (string, error) {
 	header := map[string]any{"alg": "RS256", "typ": "JWT", "kid": s.kid}
 
 	claimBytes, claimMarshalErr := json.Marshal(claims)
@@ -37,7 +37,7 @@ func (s *Signer) Sign(claims map[string]any) ([]byte, error) {
 	hash := sha256.Sum256([]byte(signingInput))
 	sig, signErr := rsa.SignPKCS1v15(rand.Reader, s.privateKey, crypto.SHA256, hash[:])
 	if signErr != nil {
-		return nil, signErr
+		return "", signErr
 	}
-	return []byte(signingInput + "." + base64.RawURLEncoding.EncodeToString(sig)), nil
+	return signingInput + "." + base64.RawURLEncoding.EncodeToString(sig), nil
 }
