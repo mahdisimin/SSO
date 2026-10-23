@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 )
 
-type sign struct {
+type Sign struct {
 	sercretKey *rsa.PrivateKey
 	kid        string
 }
@@ -24,14 +24,14 @@ type sign struct {
 ۷. return signingInput + "." + base64url(sig)
 */
 
-func NewSign(key *rsa.PrivateKey, kid string) *sign {
-	return &sign{
+func NewSigner(key *rsa.PrivateKey, kid string) *Sign {
+	return &Sign{
 		sercretKey: key,
 		kid:        kid,
 	}
 }
 
-func (s *sign) Sign(claims map[string]any) ([]byte, error) {
+func (s *Sign) Sign(claims map[string]any) ([]byte, error) {
 	header := map[string]any{"alg": "RS256", "typ": "JWT", "kid": s.kid}
 
 	claimBytes, _ := json.Marshal(claims)

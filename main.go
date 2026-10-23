@@ -3,6 +3,7 @@ package main
 import (
 	"SSO/config"
 	"SSO/delivery/router"
+	"SSO/jwt"
 	"SSO/keys"
 	"SSO/services"
 	"fmt"
@@ -25,6 +26,8 @@ func main() {
 		log.Fatal("error on generating kid : ", errKeyID)
 	}
 	fmt.Println(Kid)
+	signer := jwt.NewSigner(rsaKey, Kid)
+	_ = signer
 	issuer := services.NewIssuer(cfg.IssuerAddress)
 
 	router.RouteResolver(cfg.IssuerPort, issuer)
