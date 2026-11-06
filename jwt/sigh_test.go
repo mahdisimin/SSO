@@ -67,7 +67,7 @@ func TestSign_InvalidSignature(t *testing.T) {
 	}
 }
 
-func TestSign_TokenConent(t *testing.T) {
+func TestSign_TokenContent(t *testing.T) {
 	t.Helper()
 
 	signer, _ := generate_signer(t)
