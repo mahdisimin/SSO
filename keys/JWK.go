@@ -16,7 +16,7 @@ type JWK struct {
 }
 
 type JWKs struct {
-	Keys []JWK
+	Keys []JWK `json:"keys"`
 }
 
 func NewJWK(pub rsa.PublicKey, kid string) *JWK {
