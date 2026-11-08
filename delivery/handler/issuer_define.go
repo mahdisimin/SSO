@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"SSO/keys"
 	"SSO/services"
 	"net/http"
 
@@ -10,5 +11,11 @@ import (
 func DefineIssuerHandler(issuer services.IssuerStruct) echo.HandlerFunc {
 	return func(c *echo.Context) error {
 		return c.JSON(http.StatusOK, issuer)
+	}
+}
+
+func JWKsHandler(jwks keys.JWK) echo.HandlerFunc {
+	return func(c *echo.Context) error {
+		return c.JSON(http.StatusOK, jwks)
 	}
 }
