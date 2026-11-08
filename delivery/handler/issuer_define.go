@@ -14,7 +14,7 @@ func DefineIssuerHandler(issuer services.IssuerStruct) echo.HandlerFunc {
 	}
 }
 
-func JWKsHandler(jwks keys.JWK) echo.HandlerFunc {
+func JWKsHandler(jwks keys.JWKs) echo.HandlerFunc {
 	return func(c *echo.Context) error {
 		return c.JSON(http.StatusOK, jwks)
 	}

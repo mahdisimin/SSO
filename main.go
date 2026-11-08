@@ -29,6 +29,8 @@ func main() {
 	signer := jwt.NewSigner(rsaKey, Kid)
 	_ = signer
 	issuer := services.NewIssuer(cfg.IssuerAddress)
-	jwks := keys.NewJWK(rsaKey.PublicKey, Kid)
-	router.RouteResolver(cfg.IssuerPort, issuer, *jwks)
+	jwk := keys.NewJWK(rsaKey.PublicKey, Kid)
+	jwks := keys.JWKs{Keys: []keys.JWK{*jwk}}
+	router.RouteResolver(cfg.IssuerPort, issuer, jwks)
+
 }
