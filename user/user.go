@@ -1,6 +1,8 @@
 package user
 
 import (
+	"errors"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -9,6 +11,16 @@ type User struct {
 	UserName     string `json:"username"`
 	Email        string `json:"email"`
 	HashPassword string `json:"hash_password"`
+}
+
+var (
+	ErrNotFound = errors.New("user not found")
+	ErrExists   = errors.New("user already exists")
+)
+
+type Store interface {
+	Create(User) (err error)
+	FindByUsername(username string) (user User, err error)
 }
 
 func NewUser(userName, email, Password string) User {
