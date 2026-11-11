@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"errors"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -12,7 +13,7 @@ type User struct {
 	ID           string
 	UserName     string `json:"username"`
 	Email        string `json:"email"`
-	HashPassword string `json:"hash_password"`
+	HashPassword string `json:"-"`
 }
 
 var (
@@ -34,6 +35,9 @@ func NewUser(userName, email, Password string) User {
 	if err != nil {
 		panic(err)
 	}
+	userName = strings.ToLower(userName)
+	userName = strings.TrimSpace(userName)
+
 	return User{
 		ID:           id,
 		UserName:     userName,

@@ -28,9 +28,11 @@ func main() {
 	jwks := keys.JWKs{Keys: []keys.JWK{*jwk}}
 
 	newMemoryStore := user.NewMemoryStore()
-	NewUser := user.NewUser(cfg.TestUsername, "Test@gmail.com", cfg.TestPassword)
-	if err := newMemoryStore.Create(NewUser); err != nil {
-		log.Fatal("error on create user : ", err)
+	if cfg.TestUsername != "" && cfg.TestPassword != "" {
+		NewUser := user.NewUser(cfg.TestUsername, "Test@gmail.com", cfg.TestPassword)
+		if err := newMemoryStore.Create(NewUser); err != nil {
+			log.Fatal("error on create user : ", err)
+		}
 	}
 
 	router.RouteResolver(cfg.IssuerPort, issuer, jwks)
