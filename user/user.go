@@ -35,9 +35,7 @@ func NewUser(userName, email, Password string) User {
 	if err != nil {
 		panic(err)
 	}
-	userName = strings.ToLower(userName)
-	userName = strings.TrimSpace(userName)
-
+	userName = normalizeUsername(userName)
 	return User{
 		ID:           id,
 		UserName:     userName,
@@ -65,4 +63,8 @@ func generateSecureString() (string, error) {
 
 	// Convert the 16 bytes to a 32-character hex string
 	return hex.EncodeToString(bytes), nil
+}
+
+func normalizeUsername(s string) string {
+	return strings.ToLower(strings.TrimSpace(s))
 }

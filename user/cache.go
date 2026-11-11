@@ -32,6 +32,7 @@ func (ms *MemoryStore) Create(u User) (err error) {
 func (ms *MemoryStore) FindByUsername(username string) (user User, err error) {
 	ms.mu.RLock()
 	defer ms.mu.RUnlock()
+	username = normalizeUsername(username)
 	user, ok := ms.users[username]
 	if !ok {
 		return user, ErrNotFound
