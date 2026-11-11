@@ -19,6 +19,11 @@ func NewMemoryStore() *MemoryStore {
 func (ms *MemoryStore) Create(u User) (err error) {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
+
+	if _, ok := ms.users[u.UserName]; ok {
+		return ErrExists
+	}
+
 	ms.users[u.UserName] = u
 	log.Println("Create user : ", u.UserName)
 	return nil
