@@ -11,7 +11,7 @@ func TestLoginRequest_Validate(t *testing.T) {
 		request LoginRequest
 		wantErr bool
 	}{
-		{"valid", LoginRequest{"mahdi", "12345678"}, false},
+		{"valid", LoginRequest{"mahdi", "1234"}, false},
 		{"empty username", LoginRequest{"", "1234"}, true},
 		{"spaces only", LoginRequest{"   ", "1234"}, true},
 		{"empty password", LoginRequest{"mahdi", ""}, true},
