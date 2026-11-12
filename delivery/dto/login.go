@@ -28,7 +28,7 @@ func (l LoginRequest) Validate() error {
 		return ValidationError{Field: "username", Message: "must be less than 64 characters"}
 	}
 
-	if len(l.Password) > 72 || len(l.Password) < 8 {
+	if len(l.Password) > 72 {
 		return ValidationError{Field: "password", Message: "must be between 8 and 72 characters"}
 	}
 
