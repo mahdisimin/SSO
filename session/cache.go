@@ -25,6 +25,10 @@ func (ms *MemoryStore) Get(userID string) (Session, error) {
 	if !ok {
 		return session, ErrNotFound
 	}
+
+	if time.Now().After(session.ExpiresAt) {
+		return session, ErrNotFound
+	}
 	return session, nil
 }
 
