@@ -14,7 +14,10 @@ func main() {
 	if err != nil {
 		log.Fatal("error on loading env variables : ", err)
 	}
-	cfg := config.Load()
+	cfg, confErr := config.Load()
+	if confErr != nil {
+		log.Fatal("error on loading config : ", confErr)
+	}
 	rsaKey, rsaLoadErr := keys.LoadOrGenerateKey(cfg.KeyPath)
 	if rsaLoadErr != nil {
 		log.Fatal("error on load / generate rsa key : ", rsaLoadErr)
