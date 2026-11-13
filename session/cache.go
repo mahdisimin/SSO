@@ -1,6 +1,9 @@
 package session
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 type MemoryStore struct {
 	mu    sync.RWMutex
