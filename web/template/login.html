@@ -1,5 +1,6 @@
 <form method="post" action="/login">
-    <input name="username">
-    <input name="password" type="password">
+    <input name="username" value="{{.Username}}">
+    <input name="password" type="password" >
     <button>login</button>
+    {{if .Error}}<p>{{.Error}}</p>{{end}}
 </form>
