@@ -13,7 +13,7 @@ import (
 func RouteResolver(port string, issuer services.IssuerStruct, jwks keys.JWKs, tmpl *template.Template) {
 
 	e := echo.New()
-
+	e.Use(middleware.RequestLogger())
 	e.GET(".well-known/openid-configuration", handler.DefineIssuerHandler(issuer))
 	e.GET("/.well-known/jwks.json", handler.JWKsHandler(jwks))
 	e.GET("/login", handler.LoginPageHandler(tmpl))
