@@ -6,6 +6,7 @@ import (
 	"SSO/keys"
 	"SSO/services"
 	"SSO/user"
+	"html/template"
 	"log"
 )
 
@@ -37,7 +38,10 @@ func main() {
 			log.Fatal("error on create user : ", err)
 		}
 	}
-
-	router.RouteResolver(cfg.IssuerPort, issuer, jwks)
+	tmpl, err := template.ParseGlob("web/template/*.html")
+	if err != nil {
+		log.Fatal("error on parsing templates : ", err)
+	}
+	router.RouteResolver(cfg.IssuerPort, issuer, jwks, tmpl)
 
 }

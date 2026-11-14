@@ -7,6 +7,11 @@ type LoginRequest struct {
 	Password string `form:"password"`
 }
 
+type LoginPage struct {
+	Username string
+	Error    string
+}
+
 type ValidationError struct {
 	Field   string
 	Message string
