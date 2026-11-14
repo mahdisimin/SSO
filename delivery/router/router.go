@@ -8,6 +8,7 @@ import (
 	"log"
 
 	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 )
 
 func RouteResolver(port string, issuer services.IssuerStruct, jwks keys.JWKs, tmpl *template.Template) {
