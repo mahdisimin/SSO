@@ -5,7 +5,6 @@ import (
 	"SSO/keys"
 	"SSO/services"
 	"bytes"
-	"fmt"
 	"html/template"
 	"net/http"
 
