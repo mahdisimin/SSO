@@ -22,7 +22,7 @@ func NewAuthService(users user.Store, sessions session.Store, sessionTTL time.Du
 }
 
 func (s *AuthService) Login(userName string, password string) (session.Session, error) {
-	userins, errFindUser := s.Users.FindByUsername(userName)
+	userIns, errFindUser := s.Users.FindByUsername(userName)
 	if errFindUser != nil {
 		if errors.Is(errFindUser, user.ErrInvalidCredentials) {
 			return session.Session{}, user.ErrInvalidCredentials
@@ -33,11 +33,11 @@ func (s *AuthService) Login(userName string, password string) (session.Session, 
 		return session.Session{}, errFindUser
 	}
 
-	if ok := userins.CheckPassword(password); ok != true {
+	if ok := userIns.CheckPassword(password); ok != true {
 		return session.Session{}, user.ErrInvalidCredentials
 	}
 
-	sessionIns, errSession := session.NewSession(userName, s.sessionTTL)
+	sessionIns, errSession := session.NewSession(userIns.ID, s.sessionTTL)
 	if errSession != nil {
 		return session.Session{}, errSession
 	}
