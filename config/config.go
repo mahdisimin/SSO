@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -14,6 +15,7 @@ type Config struct {
 	TestUsername  string
 	TestPassword  string
 	SessionTTL    time.Duration
+	CookieSecure  bool
 }
 
 func getEnv(key, fallback string) string {
@@ -30,6 +32,7 @@ func Load() (Config, error) {
 	SSO_SEED_USERNAME := getEnv("SSO_SEED_USERNAME", "")
 	SSO_SEED_PASSWORD := getEnv("SSO_SEED_PASSWORD", "")
 	SSO_SESSION_TTL := getEnv("SSO_SESSION_TTL", "8h")
+	SSO_COOKIE_SECURE := getEnv("SSO_COOKIE_SECURE", "false")
 	SSO_ISSUER = strings.TrimSuffix(SSO_ISSUER, "/")
 
 	SessionTTL, err := time.ParseDuration(SSO_SESSION_TTL)
@@ -37,6 +40,11 @@ func Load() (Config, error) {
 		return Config{}, errors.New("invalid SSO_SESSION_TTL")
 
 	}
+	ssoSecureBool, errorConv := strconv.ParseBool(SSO_COOKIE_SECURE)
+	if errorConv != nil {
+		return Config{}, errors.New("invalid SSO_COOKIE_SECURE")
+	}
+
 	config := Config{
 		IssuerAddress: SSO_ISSUER,
 		IssuerPort:    SSO_PORT,
@@ -44,6 +52,7 @@ func Load() (Config, error) {
 		TestUsername:  SSO_SEED_USERNAME,
 		TestPassword:  SSO_SEED_PASSWORD,
 		SessionTTL:    SessionTTL,
+		CookieSecure:  ssoSecureBool,
 	}
 	return config, nil
 }
