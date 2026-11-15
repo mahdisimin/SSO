@@ -57,7 +57,7 @@ func LoginHandler(auth services.AuthService, conf config.Config, tmpl *template.
 			Name:     "SSO_session",
 			Value:    sessionIns.ID,
 			Path:     "/",
-			MaxAge:   int(conf.SessionTTL),
+			MaxAge:   int(time.Until(sessionIns.ExpiresAt).Seconds()),
 			Secure:   conf.CookieSecure,
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
