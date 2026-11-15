@@ -44,7 +44,7 @@ func main() {
 	if err != nil {
 		log.Fatal("error on parsing templates : ", err)
 	}
-	auth := services.NewAuthService(newMemoryStore, newSessionStore, 5)
-	router.RouteResolver(cfg.IssuerPort, issuer, jwks, tmpl, auth)
+	auth := services.NewAuthService(newMemoryStore, newSessionStore, cfg.SessionTTL)
+	router.RouteResolver(cfg, issuer, jwks, tmpl, auth)
 
 }
