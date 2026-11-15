@@ -11,13 +11,14 @@ import (
 	"github.com/labstack/echo/v5/middleware"
 )
 
-func RouteResolver(port string, issuer services.IssuerStruct, jwks keys.JWKs, tmpl *template.Template) {
+func RouteResolver(port string, issuer services.IssuerStruct, jwks keys.JWKs, tmpl *template.Template, auth services.AuthService) {
 
 	e := echo.New()
 	e.Use(middleware.RequestLogger())
 	e.GET(".well-known/openid-configuration", handler.DefineIssuerHandler(issuer))
 	e.GET("/.well-known/jwks.json", handler.JWKsHandler(jwks))
 	e.GET("/login", handler.LoginPageHandler(tmpl))
+	e.POST("/login", handler.LoginHandler(auth))
 	log.Printf("server listening on port %s ... \n", port)
 
 	log.Fatal(e.Start(":" + port))
