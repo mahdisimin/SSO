@@ -29,7 +29,6 @@ func LoginPageHandler(tmpl *template.Template) echo.HandlerFunc {
 		if err := tmpl.ExecuteTemplate(&buf, "login.html", dto.LoginPage{}); err != nil {
 			return err
 		}
-		fmt.Println(buf.String())
 		return c.HTML(http.StatusOK, buf.String())
 	}
 
