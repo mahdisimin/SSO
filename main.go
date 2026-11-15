@@ -5,6 +5,7 @@ import (
 	"SSO/delivery/router"
 	"SSO/keys"
 	"SSO/services"
+	"SSO/session"
 	"SSO/user"
 	"html/template"
 	"log"
@@ -32,6 +33,7 @@ func main() {
 	jwks := keys.JWKs{Keys: []keys.JWK{*jwk}}
 
 	newMemoryStore := user.NewMemoryStore()
+	newSessionStore := session.NewMemoryStore()
 	if cfg.TestUsername != "" && cfg.TestPassword != "" {
 		NewUser := user.NewUser(cfg.TestUsername, "Test@gmail.com", cfg.TestPassword)
 		if err := newMemoryStore.Create(NewUser); err != nil {
@@ -42,6 +44,7 @@ func main() {
 	if err != nil {
 		log.Fatal("error on parsing templates : ", err)
 	}
-	router.RouteResolver(cfg.IssuerPort, issuer, jwks, tmpl)
+	auth := services.NewAuthService(newMemoryStore, newSessionStore, 5)
+	router.RouteResolver(cfg.IssuerPort, issuer, jwks, tmpl, auth)
 
 }
