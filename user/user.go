@@ -17,8 +17,9 @@ type User struct {
 }
 
 var (
-	ErrNotFound = errors.New("user not found")
-	ErrExists   = errors.New("user already exists")
+	ErrNotFound           = errors.New("user not found")
+	ErrExists             = errors.New("user already exists")
+	ErrInvalidCredentials = errors.New("invalid credentials")
 )
 
 type Store interface {
