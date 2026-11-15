@@ -1,13 +1,13 @@
 package handler
 
 import (
+	"SSO/config"
 	"SSO/delivery/dto"
 	"SSO/services"
 	"SSO/user"
 	"bytes"
 	"errors"
 	"html/template"
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v5"
@@ -24,34 +24,41 @@ func LoginPageHandler(tmpl *template.Template) echo.HandlerFunc {
 
 }
 
-func LoginHandler(auth services.AuthService) echo.HandlerFunc {
+func LoginHandler(auth services.AuthService, conf config.Config, tmpl *template.Template) echo.HandlerFunc {
 	return func(c *echo.Context) error {
+		var buf bytes.Buffer
 		loginReq := dto.LoginRequest{}
 		if err := c.Bind(&loginReq); err != nil {
-			return c.JSON(http.StatusBadRequest, err)
+			return err
 		}
 		if err := loginReq.Validate(); err != nil {
-			return c.JSON(http.StatusBadRequest, dto.LoginPage{
+			if errTmp := tmpl.ExecuteTemplate(&buf, "login.html", dto.LoginPage{
 				Username: loginReq.Username,
-				Error:    err.Error(),
-			})
+				Error:    user.ErrInvalidCredentials.Error(),
+			}); errTmp != nil {
+				return errTmp
+			}
+			return c.HTML(http.StatusBadRequest, buf.String())
 		}
 		sessionIns, errLogin := auth.Login(loginReq.Username, loginReq.Password)
 		if errLogin != nil {
-			if errors.Is(errLogin, user.ErrInvalidCredentials) {
-				return c.JSON(http.StatusUnauthorized, user.ErrInvalidCredentials)
-			} else if errors.Is(errLogin, user.ErrNotFound) {
-				return c.JSON(http.StatusUnauthorized, user.ErrInvalidCredentials)
+			if errors.Is(errLogin, user.ErrInvalidCredentials) || errors.Is(errLogin, user.ErrNotFound) {
+				if errTmp := tmpl.ExecuteTemplate(&buf, "login.html", dto.LoginPage{
+					Username: loginReq.Username,
+					Error:    user.ErrInvalidCredentials.Error(),
+				}); errTmp != nil {
+					return errTmp
+				}
+				return c.HTML(http.StatusUnauthorized, buf.String())
 			}
-			log.Println(errLogin)
-			return c.JSON(http.StatusInternalServerError, errors.New("internal server error"))
+			return errLogin
 		}
 		c.SetCookie(&http.Cookie{
 			Name:     "SSO_session",
 			Value:    sessionIns.ID,
 			Path:     "/",
-			MaxAge:   28800,
-			Secure:   false,
+			MaxAge:   int(conf.SessionTTL),
+			Secure:   conf.CookieSecure,
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
 		})
