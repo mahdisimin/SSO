@@ -39,3 +39,14 @@ func (ms *MemoryStore) FindByUsername(username string) (user User, err error) {
 	}
 	return user, nil
 }
+
+func (ms *MemoryStore) FindByID(id string) (User, error) {
+	ms.mu.RLock()
+	defer ms.mu.RUnlock()
+	for _, user := range ms.users {
+		if user.ID == id {
+			return user, nil
+		}
+	}
+	return User{}, ErrNotFound
+}
