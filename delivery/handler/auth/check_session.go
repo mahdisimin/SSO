@@ -18,12 +18,12 @@ func CheckSessionHandler(auth auth.AuthService, tmpl *template.Template) echo.Ha
 			return c.Redirect(http.StatusFound, "/login") //Check if cookie does not exist , then user will be redirected to login page
 		}
 		sessionID := cookieIns.Value
-		ok := auth.CheckSession(sessionID)
+		userIns, ok := auth.CheckSession(sessionID)
 		if !ok {
 			return c.Redirect(http.StatusFound, "/login")
 		}
 
-		if err := tmpl.ExecuteTemplate(&buf, "me.html", dto.MePage{Username: "MMAD"}); err != nil {
+		if err := tmpl.ExecuteTemplate(&buf, "me.html", dto.MePage{Username: userIns.UserName}); err != nil {
 			return err
 		}
 		return c.HTML(http.StatusOK, buf.String())
