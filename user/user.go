@@ -25,6 +25,7 @@ var (
 type Store interface {
 	Create(User) (err error)
 	FindByUsername(username string) (user User, err error)
+	FindByID(ID string) (user User, err error)
 }
 
 func NewUser(userName, email, Password string) User {
