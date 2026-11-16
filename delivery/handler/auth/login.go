@@ -68,18 +68,3 @@ func LoginHandler(auth auth.AuthService, conf config.Config, tmpl *template.Temp
 		return c.Redirect(http.StatusSeeOther, "/me")
 	}
 }
-
-func CheckSessionHandler(auth auth.AuthService) echo.HandlerFunc {
-	return func(c *echo.Context) error {
-		cookieIns, errCookie := c.Cookie(cookieName)
-		if errCookie != nil {
-			return c.Redirect(http.StatusFound, "/login") //Check if cookie does not exist , then user will be redirected to login page
-		}
-		sessionID := cookieIns.Value
-		if ok := auth.CheckSession(sessionID); !ok {
-			return c.Redirect(http.StatusFound, "/login")
-		}
-		return c.JSON(http.StatusOK, "ok")
-	}
-
-}
