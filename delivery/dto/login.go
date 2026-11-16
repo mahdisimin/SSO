@@ -12,6 +12,10 @@ type LoginPage struct {
 	Error    string
 }
 
+type MePage struct {
+	Username string
+}
+
 type ValidationError struct {
 	Field   string
 	Message string
