@@ -10,7 +10,7 @@ import (
 
 func LogoutHandler(authSvc auth.AuthService, cfg config.Config) echo.HandlerFunc {
 	return func(c *echo.Context) error {
-		cookieIns, errCookie := c.Cookie("session_id")
+		cookieIns, errCookie := c.Cookie(cookieName)
 		if errCookie != nil {
 			return c.Redirect(http.StatusSeeOther, "/login")
 		}
