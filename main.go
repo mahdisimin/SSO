@@ -5,6 +5,7 @@ import (
 	"SSO/delivery/router"
 	"SSO/keys"
 	"SSO/services"
+	"SSO/services/auth"
 	"SSO/session"
 	"SSO/user"
 	"html/template"
@@ -44,7 +45,7 @@ func main() {
 	if err != nil {
 		log.Fatal("error on parsing templates : ", err)
 	}
-	auth := services.NewAuthService(newMemoryStore, newSessionStore, cfg.SessionTTL)
+	auth := auth.NewAuthService(newMemoryStore, newSessionStore, cfg.SessionTTL)
 	router.RouteResolver(cfg, issuer, jwks, tmpl, auth)
 
 }
