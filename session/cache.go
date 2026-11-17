@@ -21,10 +21,10 @@ func (ms *MemoryStore) Create(s Session) error {
 	return nil
 }
 
-func (ms *MemoryStore) Get(userID string) (Session, error) {
+func (ms *MemoryStore) Get(SessionID string) (Session, error) {
 	ms.mu.RLock()
 	defer ms.mu.RUnlock()
-	session, ok := ms.users[userID]
+	session, ok := ms.users[SessionID]
 	if !ok {
 		return session, ErrNotFound
 	}
@@ -35,9 +35,9 @@ func (ms *MemoryStore) Get(userID string) (Session, error) {
 	return session, nil
 }
 
-func (ms *MemoryStore) Delete(userId string) error {
+func (ms *MemoryStore) Delete(SessionID string) error {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
-	delete(ms.users, userId)
+	delete(ms.users, SessionID)
 	return nil
 }
