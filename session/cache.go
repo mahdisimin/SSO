@@ -1,0 +1,43 @@
+package session
+
+import (
+	"sync"
+	"time"
+)
+
+type MemoryStore struct {
+	mu    sync.RWMutex
+	users map[string]Session
+}
+
+func NewMemoryStore() *MemoryStore {
+	return &MemoryStore{users: make(map[string]Session)}
+}
+
+func (ms *MemoryStore) Create(s Session) error {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	ms.users[s.ID] = s
+	return nil
+}
+
+func (ms *MemoryStore) Get(SessionID string) (Session, error) {
+	ms.mu.RLock()
+	defer ms.mu.RUnlock()
+	session, ok := ms.users[SessionID]
+	if !ok {
+		return session, ErrNotFound
+	}
+
+	if time.Now().After(session.ExpiresAt) {
+		return session, ErrNotFound
+	}
+	return session, nil
+}
+
+func (ms *MemoryStore) Delete(SessionID string) error {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	delete(ms.users, SessionID)
+	return nil
+}
