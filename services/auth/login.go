@@ -28,7 +28,7 @@ func (s *AuthService) Login(userName string, password string) (session.Session, 
 			return session.Session{}, user.ErrInvalidCredentials
 		}
 		if errors.Is(errFindUser, user.ErrNotFound) {
-			return session.Session{}, user.ErrNotFound
+			return session.Session{}, user.ErrInvalidCredentials
 		}
 		return session.Session{}, errFindUser
 	}
