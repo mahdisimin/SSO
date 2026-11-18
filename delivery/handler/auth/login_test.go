@@ -59,9 +59,12 @@ func TestLoginHandler(t *testing.T) {
 	if rec.Header().Get("Location") != "/me" {
 		t.Errorf("expecting %s, got %s", "/me", rec.Header().Get("Location"))
 	}
-	coockie := rec.Header().Get("Set-Cookie")
+	cookie := rec.Header().Get("Set-Cookie")
 
-	if !(strings.Contains(coockie, "HttpOnly") || strings.Contains(coockie, "SameSite=Lax")) {
-		t.Errorf("expecting Set-Cookie header got %s", coockie)
+	if !strings.Contains(cookie, "HttpOnly") {
+		t.Errorf("Set-Cookie = %q, want HttpOnly", cookie)
+	}
+	if !strings.Contains(cookie, "SameSite=Lax") {
+		t.Errorf("Set-Cookie = %q, want SameSite=Lax", cookie)
 	}
 }
