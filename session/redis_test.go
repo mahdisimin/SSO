@@ -5,13 +5,21 @@ import (
 	"fmt"
 	"testing"
 	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 func TestRedis_Create(t *testing.T) {
 
 	t.Helper()
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	},
+	)
 
-	redisIns := NewRedis()
+	redisIns := NewRedis(client)
 	sessionIns, errSessoin := NewSession("user-1", time.Minute*5)
 	if errSessoin != nil {
 		t.Error(errSessoin)
@@ -33,7 +41,15 @@ func TestRedis_Delete(t *testing.T) {
 
 	t.Helper()
 
-	redisIns := NewRedis()
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	},
+	)
+
+	redisIns := NewRedis(client)
+
 	sessionIns, errSessoin := NewSession("user-1", time.Minute*5)
 	if errSessoin != nil {
 		t.Error(errSessoin)
@@ -54,7 +70,14 @@ func TestRedis_Delete(t *testing.T) {
 
 func TestRedis_CreateExpire(t *testing.T) {
 	t.Helper()
-	redisIns := NewRedis()
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	},
+	)
+
+	redisIns := NewRedis(client)
 	sessionIns, errSessoin := NewSession("user-1", -1*time.Minute*5)
 	if errSessoin != nil {
 		t.Error(errSessoin)
