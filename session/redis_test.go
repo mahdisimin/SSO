@@ -2,6 +2,7 @@ package session
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 )
