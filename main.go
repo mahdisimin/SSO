@@ -41,7 +41,7 @@ func main() {
 
 	if cfg.TestUsername != "" && cfg.TestPassword != "" {
 		NewUser := user.NewUser(cfg.TestUsername, "Test@gmail.com", cfg.TestPassword)
-		if NewUser.ID != "" {
+		if cfg.TestUserID != "" {
 			NewUser.ID = cfg.TestUserID
 		}
 		if err := DBStore.Create(NewUser); err != nil {

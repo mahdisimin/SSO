@@ -39,7 +39,7 @@ func Load() (Config, error) {
 	SSO_ISSUER = strings.TrimSuffix(SSO_ISSUER, "/")
 	SSO_SESSION_STORE := getEnv("SSO_SESSION_STORE", "memory")
 	SSO_REDIS_ADDR := getEnv("SSO_REDIS_ADDR", "localhost:6379")
-	SSO_SEED_USERID := getEnv("SSO_SEED_USERID", "123456789")
+	SSO_SEED_USERID := getEnv("SSO_SEED_USERID", "")
 
 	SessionTTL, err := time.ParseDuration(SSO_SESSION_TTL)
 	if err != nil {
