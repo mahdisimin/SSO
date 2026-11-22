@@ -32,10 +32,6 @@ func NewRedis() *Redis {
 }
 
 func (r *Redis) Create(session Session) error {
-
-	if err := r.client.Ping(r.ctx).Err(); err != nil {
-		return errors.New("redis ping err:" + err.Error())
-	}
 	sessionJson, errMarshal := json.Marshal(session)
 	if errMarshal != nil {
 		return errMarshal
@@ -43,7 +39,9 @@ func (r *Redis) Create(session Session) error {
 	if time.Until(session.ExpiresAt) < 0 {
 		return ErrExpired
 	}
-	r.client.Set(r.ctx, session.ID, sessionJson, time.Until(session.ExpiresAt))
+	if err := r.client.Set(r.ctx, session.ID, sessionJson, time.Until(session.ExpiresAt)).Err(); err != nil {
+		return err
+	}
 	return nil
 
 }
@@ -63,6 +61,8 @@ func (r *Redis) Get(sessionID string) (Session, error) {
 }
 
 func (r *Redis) Delete(ID string) error {
-	r.client.Del(r.ctx, ID)
+	if err := r.client.Del(r.ctx, ID).Err(); err != nil {
+		return err
+	}
 	return nil
 }
