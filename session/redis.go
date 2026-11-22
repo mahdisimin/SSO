@@ -20,6 +20,8 @@ type Redis struct {
 	Delete(ID string) error
 */
 
+var ErrExpired = errors.New("expired session")
+
 func NewRedis() *Redis {
 	return &Redis{client: redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
@@ -39,10 +41,9 @@ func (r *Redis) Create(session Session) error {
 		return errMarshal
 	}
 	if time.Until(session.ExpiresAt) < 0 {
-		return errors.New("session expired")
+		return ErrExpired
 	}
 	r.client.Set(r.ctx, session.ID, sessionJson, time.Until(session.ExpiresAt))
-	println("Create session:", session.ID)
 	return nil
 
 }
