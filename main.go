@@ -37,7 +37,7 @@ func main() {
 
 	DBStore := user.NewMemoryStore()
 
-	memoryStore := newMemoryStore(cfg.SessionStore)
+	memoryStore := newMemoryStore(cfg)
 
 	if cfg.TestUsername != "" && cfg.TestPassword != "" {
 		NewUser := user.NewUser(cfg.TestUsername, "Test@gmail.com", cfg.TestPassword)
@@ -57,12 +57,12 @@ func main() {
 
 }
 
-func newMemoryStore(memoryStoreName string) session.Store {
-	switch memoryStoreName {
+func newMemoryStore(cfg config.Config) session.Store {
+	switch cfg.SessionStore {
 	case "redis":
 		{
 			client := redis.NewClient(&redis.Options{
-				Addr:     "localhost:6379",
+				Addr:     cfg.RedisHost,
 				Password: "",
 				DB:       0,
 			},
