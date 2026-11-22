@@ -30,6 +30,10 @@ func NewRedis() *Redis {
 }
 
 func (r *Redis) Create(session Session) error {
+
+	if err := r.client.Ping(r.ctx).Err(); err != nil {
+		return errors.New("redis ping err:" + err.Error())
+	}
 	sessionJson, errMarshal := json.Marshal(session)
 	if errMarshal != nil {
 		return errMarshal
