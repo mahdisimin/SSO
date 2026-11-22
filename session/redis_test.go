@@ -59,7 +59,7 @@ func TestRedis_CreateExpire(t *testing.T) {
 		t.Error(errSessoin)
 	}
 	if err := redisIns.Create(sessionIns); err != nil {
-		println("error is : ", errSessoin)
+		fmt.Println("error is : ", errSessoin)
 		if !errors.Is(err, ErrExpired) {
 			t.Error("error should be ErrExpired")
 		}
