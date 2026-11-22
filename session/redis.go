@@ -3,6 +3,7 @@ package session
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -24,7 +25,8 @@ func NewRedis() *Redis {
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
-	})}
+	},
+	), ctx: context.Background()}
 }
 
 func (r *Redis) Create(session Session) error {
@@ -33,13 +35,16 @@ func (r *Redis) Create(session Session) error {
 		return errMarshal
 	}
 	r.client.Set(r.ctx, session.ID, sessionJson, time.Minute*5)
-	defer r.client.Close()
+	println("Create session:", session.ID)
 	return nil
 
 }
-func (r *Redis) Get(ID string) (Session, error) {
-	sessionJsn, errGet := r.client.Get(r.ctx, ID).Result()
+func (r *Redis) Get(sessionID string) (Session, error) {
+	sessionJsn, errGet := r.client.Get(r.ctx, sessionID).Result()
 	if errGet != nil {
+		if errors.Is(errGet, redis.Nil) {
+			return Session{}, ErrNotFound
+		}
 		return Session{}, errGet
 	}
 	sessionIns := Session{}
