@@ -34,7 +34,10 @@ func (r *Redis) Create(session Session) error {
 	if errMarshal != nil {
 		return errMarshal
 	}
-	r.client.Set(r.ctx, session.ID, sessionJson, time.Minute*5)
+	if time.Until(session.ExpiresAt) < 0 {
+		return errors.New("session expired")
+	}
+	r.client.Set(r.ctx, session.ID, sessionJson, time.Until(session.ExpiresAt))
 	println("Create session:", session.ID)
 	return nil
 
