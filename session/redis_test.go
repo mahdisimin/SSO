@@ -2,7 +2,6 @@ package session
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 	"time"
 
@@ -11,7 +10,6 @@ import (
 
 func TestRedis_Create(t *testing.T) {
 
-	t.Helper()
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
@@ -20,6 +18,10 @@ func TestRedis_Create(t *testing.T) {
 	)
 
 	redisIns := NewRedis(client)
+
+	if err := client.Ping(redisIns.Ctx).Err(); err != nil {
+		t.Skip("Redis is not available : ", err)
+	}
 	sessionIns, errSessoin := NewSession("user-1", time.Minute*5)
 	if errSessoin != nil {
 		t.Error(errSessoin)
@@ -34,12 +36,11 @@ func TestRedis_Create(t *testing.T) {
 	if sessionIns2.UserID != "user-1" {
 		t.Error("session ins id should be user-1")
 	}
-	println("userID is :", sessionIns.UserID)
+
+	t.Cleanup(func() { client.Close() })
 }
 
 func TestRedis_Delete(t *testing.T) {
-
-	t.Helper()
 
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
@@ -49,6 +50,10 @@ func TestRedis_Delete(t *testing.T) {
 	)
 
 	redisIns := NewRedis(client)
+
+	if err := client.Ping(redisIns.Ctx).Err(); err != nil {
+		t.Skip("Redis is not available : ", err)
+	}
 
 	sessionIns, errSessoin := NewSession("user-1", time.Minute*5)
 	if errSessoin != nil {
@@ -62,14 +67,15 @@ func TestRedis_Delete(t *testing.T) {
 		t.Error(err)
 	}
 	_, errGet := redisIns.Get(sessionIns.ID)
-	println("error is : ", errGet)
 	if !errors.Is(errGet, ErrNotFound) {
 		t.Error(errGet)
 	}
+
+	t.Cleanup(func() { client.Close() })
 }
 
 func TestRedis_CreateExpire(t *testing.T) {
-	t.Helper()
+
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
@@ -78,12 +84,16 @@ func TestRedis_CreateExpire(t *testing.T) {
 	)
 
 	redisIns := NewRedis(client)
+
+	if err := client.Ping(redisIns.Ctx).Err(); err != nil {
+		t.Skip("Redis is not available : ", err)
+	}
+
 	sessionIns, errSessoin := NewSession("user-1", -1*time.Minute*5)
 	if errSessoin != nil {
 		t.Error(errSessoin)
 	}
 	if err := redisIns.Create(sessionIns); err != nil {
-		fmt.Println("error is : ", errSessoin)
 		if !errors.Is(err, ErrExpired) {
 			t.Error("error should be ErrExpired")
 		}
@@ -91,6 +101,8 @@ func TestRedis_CreateExpire(t *testing.T) {
 	_, errGet := redisIns.Get(sessionIns.ID)
 	if !errors.Is(errGet, ErrNotFound) {
 		t.Error(errGet)
-		println("error is : ", errGet)
+
 	}
+
+	t.Cleanup(func() { client.Close() })
 }
