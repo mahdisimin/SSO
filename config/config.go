@@ -14,8 +14,11 @@ type Config struct {
 	KeyPath       string
 	TestUsername  string
 	TestPassword  string
+	TestUserID    string
 	SessionTTL    time.Duration
 	CookieSecure  bool
+	SessionStore  string
+	RedisHost     string
 }
 
 func getEnv(key, fallback string) string {
@@ -34,6 +37,9 @@ func Load() (Config, error) {
 	SSO_SESSION_TTL := getEnv("SSO_SESSION_TTL", "8h")
 	SSO_COOKIE_SECURE := getEnv("SSO_COOKIE_SECURE", "false")
 	SSO_ISSUER = strings.TrimSuffix(SSO_ISSUER, "/")
+	SSO_SESSION_STORE := getEnv("SSO_SESSION_STORE", "memory")
+	SSO_REDIS_ADDR := getEnv("SSO_REDIS_ADDR", "localhost:6379")
+	SSO_SEED_USERID := getEnv("SSO_SEED_USERID", "")
 
 	SessionTTL, err := time.ParseDuration(SSO_SESSION_TTL)
 	if err != nil {
@@ -51,8 +57,11 @@ func Load() (Config, error) {
 		KeyPath:       SSO_KEY_PATH,
 		TestUsername:  SSO_SEED_USERNAME,
 		TestPassword:  SSO_SEED_PASSWORD,
+		TestUserID:    SSO_SEED_USERID,
 		SessionTTL:    SessionTTL,
 		CookieSecure:  ssoSecureBool,
+		SessionStore:  SSO_SESSION_STORE,
+		RedisHost:     SSO_REDIS_ADDR,
 	}
 	return config, nil
 }

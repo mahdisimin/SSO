@@ -10,6 +10,8 @@ import (
 	"SSO/user"
 	"html/template"
 	"log"
+
+	"github.com/redis/go-redis/v9"
 )
 
 func main() {
@@ -33,11 +35,16 @@ func main() {
 	jwk := keys.NewJWK(rsaKey.PublicKey, Kid)
 	jwks := keys.JWKs{Keys: []keys.JWK{*jwk}}
 
-	newMemoryStore := user.NewMemoryStore()
-	newSessionStore := session.NewMemoryStore()
+	DBStore := user.NewMemoryStore()
+
+	memoryStore := newMemoryStore(cfg)
+
 	if cfg.TestUsername != "" && cfg.TestPassword != "" {
 		NewUser := user.NewUser(cfg.TestUsername, "Test@gmail.com", cfg.TestPassword)
-		if err := newMemoryStore.Create(NewUser); err != nil {
+		if cfg.TestUserID != "" {
+			NewUser.ID = cfg.TestUserID
+		}
+		if err := DBStore.Create(NewUser); err != nil {
 			log.Fatal("error on create user : ", err)
 		}
 	}
@@ -45,7 +52,31 @@ func main() {
 	if err != nil {
 		log.Fatal("error on parsing templates : ", err)
 	}
-	auth := auth.NewAuthService(newMemoryStore, newSessionStore, cfg.SessionTTL)
+	auth := auth.NewAuthService(DBStore, memoryStore, cfg.SessionTTL)
 	router.RouteResolver(cfg, issuer, jwks, tmpl, auth)
 
+}
+
+func newMemoryStore(cfg config.Config) session.Store {
+	switch cfg.SessionStore {
+	case "redis":
+		{
+			client := redis.NewClient(&redis.Options{
+				Addr:     cfg.RedisHost,
+				Password: "",
+				DB:       0,
+			},
+			)
+			rs := session.NewRedis(client)
+			if err := rs.Client.Ping(rs.Ctx).Err(); err != nil {
+				log.Fatal("error on connecting to redis : ", err)
+			}
+			return rs
+		}
+	case "memory":
+		return session.NewMemoryStore()
+	default:
+		log.Fatal("invalid session store")
+	}
+	return nil
 }
