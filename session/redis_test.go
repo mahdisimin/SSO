@@ -16,7 +16,7 @@ func TestRedis_Create(t *testing.T) {
 		DB:       0,
 	},
 	)
-
+	t.Cleanup(func() { client.Close() })
 	redisIns := NewRedis(client)
 
 	if err := client.Ping(redisIns.Ctx).Err(); err != nil {
@@ -36,8 +36,6 @@ func TestRedis_Create(t *testing.T) {
 	if sessionIns2.UserID != "user-1" {
 		t.Error("session ins id should be user-1")
 	}
-
-	t.Cleanup(func() { client.Close() })
 }
 
 func TestRedis_Delete(t *testing.T) {
@@ -48,7 +46,7 @@ func TestRedis_Delete(t *testing.T) {
 		DB:       0,
 	},
 	)
-
+	t.Cleanup(func() { client.Close() })
 	redisIns := NewRedis(client)
 
 	if err := client.Ping(redisIns.Ctx).Err(); err != nil {
@@ -71,7 +69,6 @@ func TestRedis_Delete(t *testing.T) {
 		t.Error(errGet)
 	}
 
-	t.Cleanup(func() { client.Close() })
 }
 
 func TestRedis_CreateExpire(t *testing.T) {
@@ -82,7 +79,7 @@ func TestRedis_CreateExpire(t *testing.T) {
 		DB:       0,
 	},
 	)
-
+	t.Cleanup(func() { client.Close() })
 	redisIns := NewRedis(client)
 
 	if err := client.Ping(redisIns.Ctx).Err(); err != nil {
