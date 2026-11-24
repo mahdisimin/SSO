@@ -39,7 +39,7 @@ func main() {
 			r.SetXForwarded()
 		},
 	}
-	if err := http.ListenAndServe(":8080", proxy); err != nil {
+	if err := http.ListenAndServe(":"+cfg.LbPort, proxy); err != nil {
 		log.Fatal(err)
 	}
 }
