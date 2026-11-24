@@ -4,6 +4,7 @@ import (
 	"SSO/config"
 	"SSO/delivery/handler"
 	authHandler "SSO/delivery/handler/auth"
+	mv "SSO/delivery/middlerware"
 	"SSO/keys"
 	"SSO/services"
 	authSvc "SSO/services/auth"
@@ -18,6 +19,7 @@ func RouteResolver(cfg config.Config, issuer services.IssuerStruct, jwks keys.JW
 
 	e := echo.New()
 	e.Use(middleware.RequestLogger())
+	e.Use(mv.ServedBy(cfg.InstanceID))
 	e.GET(".well-known/openid-configuration", handler.DefineIssuerHandler(issuer))
 	e.GET("/.well-known/jwks.json", handler.JWKsHandler(jwks))
 	e.GET("/login", authHandler.LoginPageHandler(tmpl))
