@@ -20,6 +20,8 @@ type Config struct {
 	SessionStore  string
 	RedisHost     string
 	InstanceID    string
+	LbPort        string
+	LbBackends    string
 }
 
 func getEnv(key, fallback string) string {
@@ -42,6 +44,8 @@ func Load() (Config, error) {
 	SSO_REDIS_ADDR := getEnv("SSO_REDIS_ADDR", "localhost:6379")
 	SSO_SEED_USERID := getEnv("SSO_SEED_USERID", "")
 	SSO_INSTANCE_ID := getEnv("SSO_INSTANCE_ID", "sso")
+	SSO_LB_PORT := getEnv("SSO_LB_PORT", "8080")
+	SSO_LB_BACKENDS := getEnv("SSO_LB_BACKENDS", "http://localhost:8081,http://localhost:8082")
 
 	SessionTTL, err := time.ParseDuration(SSO_SESSION_TTL)
 	if err != nil {
@@ -65,6 +69,8 @@ func Load() (Config, error) {
 		SessionStore:  SSO_SESSION_STORE,
 		RedisHost:     SSO_REDIS_ADDR,
 		InstanceID:    SSO_INSTANCE_ID,
+		LbPort:        SSO_LB_PORT,
+		LbBackends:    SSO_LB_BACKENDS,
 	}
 	return config, nil
 }
