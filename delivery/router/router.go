@@ -4,7 +4,7 @@ import (
 	"SSO/config"
 	"SSO/delivery/handler"
 	authHandler "SSO/delivery/handler/auth"
-	mv "SSO/delivery/middlerware"
+	mv "SSO/delivery/middleware"
 	"SSO/keys"
 	"SSO/services"
 	authSvc "SSO/services/auth"
